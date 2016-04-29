@@ -2,6 +2,7 @@ import cv2
 import sound
 import pyaudio
 import numpy as np
+from multiprocessing import Process
 
 #returns normalized location of face in image (x,y)
 def get_face_loc(frame, face):
@@ -14,17 +15,19 @@ def map2sound(frame, face):
 
 def get_sound(frame, faces):
     root = sound.Note('A',3)
-    scale = sound.Scale(root,[2, 2, 1, 2, 2, 2, 1])
+    scale = sound.Scale(root, [2, 2, 1, 2, 2, 2, 1])
+    return np.sum([sound.pluck2(scale.get(map2sound(frame, face))) for face in faces], axis=0)
 
-    return np.sum([sound.pluck2(scale.get(map2sound(frame, face))) for face in faces])
 
 
 def main():
     faceCascade = cv2.CascadeClassifier("./faces/haarcascade_frontalface_alt.xml")
     video_capture = cv2.VideoCapture(0)
-    chunks = []
+    p = pyaudio.PyAudio()
+    stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
 
 
+    count = 0
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
@@ -46,16 +49,16 @@ def main():
         cv2.imshow('Video', frame)
 
         # Get the sound and add it to the list
-        chunks.append(get_sound(frame, faces))
+        if count % 100 == 0 and len(faces) > 0:
+            threading.Thread(target=stream.write(get_sound(frame, faces).astype(np.float32).tostring())).start()
 
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    chunk = np.concatenate(chunks)
-    p = pyaudio.PyAudio()
-    stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
-    stream.write(chunk.astype(np.float32).tostring())
+
+
+
     stream.close()
     p.terminate()
 
