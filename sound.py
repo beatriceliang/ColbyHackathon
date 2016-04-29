@@ -105,15 +105,17 @@ def chord(n, scale):
 if __name__ == '__main__':
     
     root = Note('A', 3)
-    #scale = Scale(root, [2, 1, 2, 2, 1, 3, 1])
+    #A major scale
     scale = Scale(root, [2, 2, 1, 2, 2, 2, 1])
 
     chunks = []
-    chunks.append(pluck2(scale.get(14)))
-    # chunks.append(pluck2(scale.get(15))+pluck2(scale.get(24)))
+    #chunks.append(pluck2(scale.get(14)))
+    print type(pluck2(scale.get(42)))
+    #chunks.append(pluck2(scale.get(15)))#+pluck2(scale.get(24)))
     # chunks.append(pluck2(scale.get(16)))
     # chunks.append(pluck2(scale.get(17)))
-    # chunks.append(pluck2(scale.get(28)))
+    #chunks.append(pluck2(scale.get(28)))
+    
     chunks.append(pluck2(scale.get(42)))
     #chunks.append(chord(21, scale))
     # chunks.append(chord(19, scale))
@@ -133,7 +135,7 @@ if __name__ == '__main__':
     # chunks.append(chord(20, scale) + pluck2(scale.get(29)))
     # chunks.append(chord(21, scale) + pluck2(scale.get(28)))
 
-    chunk = numpy.concatenate(chunks) * 0.25
+    chunk = numpy.concatenate(chunks)
 
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
