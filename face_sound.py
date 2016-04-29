@@ -22,6 +22,7 @@ def get_sound(frame, faces):
 def main():
     faceCascade = cv2.CascadeClassifier("./faces/haarcascade_frontalface_alt.xml")
     video_capture = cv2.VideoCapture(0)
+    chunks = []
 
 
     while True:
@@ -41,24 +42,22 @@ def main():
             cv2.circle(frame, (x+w/2,y+h/2), 2,(0, 255, 0),2 )
 
 
-
-
         # Display the resulting frame
         cv2.imshow('Video', frame)
 
-        # Get the sound and play it
-        p = pyaudio.PyAudio()
-        stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
-        sound = get_sound(frame, faces)
-        stream.write(sound.astype(np.float32).tostring())
-        stream.close()
-        p.terminate()
+        # Get the sound and add it to the list
+        chunks.append(get_sound(frame, faces))
+
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-
-
+    chunk = np.concatenate(chunks)
+    p = pyaudio.PyAudio()
+    stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
+    stream.write(chunk.astype(np.float32).tostring())
+    stream.close()
+    p.terminate()
 
     # When everything is done, release the capture
     video_capture.release()
