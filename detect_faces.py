@@ -21,10 +21,10 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    # Draw a rectangle around the faces
+    # Draws a dot at the center of the faces
     for (x, y, w, h) in faces:
-        cv2.circle(frame, (x+w/2,y+h/2), 2,(0, 255, 0),2 )
-        # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        #cv2.circle(frame, (x+w/2,y+h/2), 2,(0, 255, 0),2 )
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
     # Display the resulting frame
     cv2.imshow('Video', frame)
