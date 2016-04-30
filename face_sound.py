@@ -10,6 +10,7 @@ class Trail:
         self.face = face
         self.color = color
         self.life = 10
+        self.size = 0.5
 
 #returns normalized location of face in image (x,y)
 def get_face_loc(frame, face):
@@ -61,7 +62,7 @@ def main():
             h = faces[i][3]
             color = colorsys.hsv_to_rgb(get_face_loc(frame,(x,y,w,h))[1],1,1)
             color = (color[2]*255,color[1]*255, color[0]*255)
-            cv2.circle(frame, (x+w/2,y+h/2), w,color,-1 )            
+            cv2.circle(frame, (x+w/2,y+h/2), w/2,color,-1 )            
             if len(trails)-1 < i:
                 trails.append([Trail(faces[i],color)])
             else:
@@ -71,15 +72,15 @@ def main():
             if len(trail) > 0:
                 if trail[0].life == 0:
                     trail.pop(0)
+            width = trail[len(trail)-1].face[2]
             for loc in trail:
                 x = loc.face[0]
                 y = loc.face[1]
                 w = loc.face[2]
                 h = loc.face[3]
                 loc.life -=1
-                # print loc.color
-                cv2.circle(frame, (x+w/2,y+h/2), w,loc.color,-1 )
-
+                loc.size-=0.03
+                cv2.circle(frame, (x+w/2,y+h/2), int(width*loc.size),loc.color,-1 )
 
         # Display the resulting frame
         cv2.imshow('Video', frame)
