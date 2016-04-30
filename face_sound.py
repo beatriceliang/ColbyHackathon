@@ -70,9 +70,9 @@ def main():
         
         for trail in trails:
             if len(trail) > 0:
+                width = trail[len(trail)-1].face[2]
                 if trail[0].life == 0:
                     trail.pop(0)
-            width = trail[len(trail)-1].face[2]
             for loc in trail:
                 x = loc.face[0]
                 y = loc.face[1]
