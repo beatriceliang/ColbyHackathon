@@ -3,6 +3,13 @@ import sound
 import pyaudio
 import numpy as np
 import threading
+import colorsys
+
+class Trail:
+    def __init__(self,face, color):
+        self.face = face
+        self.color = color
+        self.life = 10
 
 #returns normalized location of face in image (x,y)
 def get_face_loc(frame, face):
@@ -31,6 +38,7 @@ def main():
     video_capture = cv2.VideoCapture(0)
     p = pyaudio.PyAudio()
 
+    trails = []
 
     count = 0
     while True:
@@ -45,11 +53,32 @@ def main():
             flags=cv2.CASCADE_SCALE_IMAGE
         )
 
-
-
         # Draws a dot at the center of the faces
-        for (x, y, w, h) in faces:
-            cv2.circle(frame, (x+w/2,y+h/2), 2,(0, 255, 0),2 )
+        for i in range(len(faces)):
+            x = faces[i][0]
+            y = faces[i][1]
+            w = faces[i][2]
+            h = faces[i][3]
+            color = colorsys.hsv_to_rgb(get_face_loc(frame,(x,y,w,h))[1],1,1)
+            color = (color[2]*255,color[1]*255, color[0]*255)
+            cv2.circle(frame, (x+w/2,y+h/2), w,color,-1 )            
+            if len(trails)-1 < i:
+                trails.append([Trail(faces[i],color)])
+            else:
+                trails[i].append(Trail(faces[i],color))
+        
+        for trail in trails:
+            if len(trail) > 0:
+                if trail[0].life == 0:
+                    trail.pop(0)
+            for loc in trail:
+                x = loc.face[0]
+                y = loc.face[1]
+                w = loc.face[2]
+                h = loc.face[3]
+                loc.life -=1
+                # print loc.color
+                cv2.circle(frame, (x+w/2,y+h/2), w,loc.color,-1 )
 
 
         # Display the resulting frame

@@ -93,7 +93,7 @@ def pluck1(note):
   return shape(chunk, {0.0: 0.0, 0.005: 1.0, 0.25: 0.5, 0.9: 0.1, 1.0:0.0})
 
 def pluck2(note):
-  chunk = harmonics2(note.frequency(), 2)
+  chunk = harmonics2(note.frequency(), 0.7)
   return shape(chunk, {0.0: 0.0, 0.5:0.75, 0.8:0.4, 1.0:0.1})
 
 def chord(n, scale):
