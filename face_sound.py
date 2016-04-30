@@ -62,12 +62,12 @@ def main():
             h = faces[i][3]
             color = colorsys.hsv_to_rgb(get_face_loc(frame,(x,y,w,h))[1],1,1)
             color = (color[2]*255,color[1]*255, color[0]*255)
-            cv2.circle(frame, (x+w/2,y+h/2), w/2,color,-1 )            
+            cv2.circle(frame, (x+w/2,y+h/2), w/2,color,-1 )
             if len(trails)-1 < i:
                 trails.append([Trail(faces[i],color)])
             else:
                 trails[i].append(Trail(faces[i],color))
-        
+
         for trail in trails:
             if len(trail) > 0:
                 width = trail[len(trail)-1].face[2]
@@ -83,7 +83,7 @@ def main():
                 cv2.circle(frame, (x+w/2,y+h/2), int(width*loc.size),loc.color,-1 )
 
         # Display the resulting frame
-        cv2.imshow('Video', frame)
+        cv2.imshow('Face the Music', frame)
 
         # Get the sound and add it to the list
         if count % 2000 == 0 and len(faces) > 0:
