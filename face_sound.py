@@ -94,9 +94,6 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-
-
-
     p.terminate()
 
     # When everything is done, release the capture
