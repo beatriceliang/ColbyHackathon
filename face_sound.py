@@ -5,6 +5,8 @@ import numpy as np
 import threading
 import colorsys
 
+
+
 class Trail:
     def __init__(self,face, color):
         self.face = face
@@ -83,8 +85,10 @@ def main():
                 cv2.circle(frame, (x+w/2,y+h/2), int(width*loc.size),loc.color,-1 )
 
         # Display the resulting frame
-        cv2.imshow('Face the Music', frame)
-
+        #full screen breaks on mac
+        cv2.namedWindow("Face the Music", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("Face the Music", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow("Face the Music",frame)
         # Get the sound and add it to the list
         if count % 2000 == 0 and len(faces) > 0:
             thread = threading.Thread(target=playSound, args=(frame, faces, p))
